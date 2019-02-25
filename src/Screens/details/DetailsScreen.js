@@ -12,7 +12,7 @@ import {
   Grid,
   Row,
   Card,
-  Title
+  Text
 } from "native-base";
 import Icon from "react-native-vector-icons/FontAwesome";
 
@@ -26,21 +26,16 @@ export default class DetailsScreen extends Component {
   };
   componentDidMount() {
     const idNum = this.props.navigation.getParam("id");
-    console.log("id Number is", idNum);
     fetch(" http://api.tvmaze.com/shows/" + idNum)
       .then(res => {
         return res.json();
       })
       .then(resData => {
-        let description = resData.summary.slice(
-         ( resData.summary.indexOf(">")+1),
-          resData.summary.lastIndexOf("<")
-        );
-        let headLine = description.slice(
-          (description.indexOf(">")+1),
-          description.indexOf("</b>")
-        );
-        let newDescription = description.slice(description.indexOf("</b>")+4);
+       
+        let HLregex = /<b>\w+<\/b>/ ;
+        let headLine = resData.summary.replace(HLregex,"");
+        let tags = /<\/?\w+>/g;
+        let newDescription = headLine.replace(tags,"");
         //description=descriprion.replace(/<b'/g,"");
 
         this.setState({
@@ -49,13 +44,12 @@ export default class DetailsScreen extends Component {
           description: newDescription,
           headLine: headLine
         });
-        console.log(this.state.description);
+        //console.log(this.state.description);
       })
       .catch(err => console.log(err));
   }
 
   render() {
-    console.log(this.state.description);
     return (
       <Container>
         <Content>
@@ -71,10 +65,8 @@ export default class DetailsScreen extends Component {
                     {starCount(this.state.rating)}
                     <H3>{this.state.rating}</H3>
                   </Row>
-                  <Row>
-                   <H1>{this.state.headLine}</H1></Row>
                 </Grid>
- <H3>{this.state.description}</H3>
+                    <Text>{this.state.description}</Text>
               </Body>
             </CardItem>
           </Card>
@@ -123,3 +115,5 @@ const starCount = num => {
  
               <Grid><Row>{starCount(this.state.info.rating.average)}<H3>{this.state.info.rating.average}</H3></Row></Grid>  
               </Body> */
+/**   <Row>
+                   <H1>{this.state.headLine}</H1></Row>*/

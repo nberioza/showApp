@@ -29,13 +29,12 @@ export default class HomeScreen extends Component {
         return res.json();
       })
       .then(resData => {
-        console.log(resData[0].rating.average);
         this.setState({ info: resData ,isLoading : false});
       });
   }
 renderScreen(){
   if(this.state.isLoading){
-return <ActivityIndicator size="large" color="#0000ff"/>
+return < ActivityIndicator  size="large" color="#0000ff"/>
   }
 
 
@@ -62,9 +61,7 @@ initialFetching(){
     return (
       <Container>
         <Content>
-          <Card >
-            {this.renderScreen()}
-            {this.state.info.map(item => (
+          <Card  dataArray={this.state.info}  renderRow={item => (
               <ShowCardItem
                 imgUri={item.image.medium}
                 title={item.name}
@@ -76,8 +73,10 @@ initialFetching(){
                     title: item.name
                   })
                 }
-              />
-            ))}
+              />   )}>
+            {this.renderScreen()}
+            
+          
           </Card>
         </Content>
         <Footer style={{ bottom: 0, position: "absolute" }}>
@@ -106,3 +105,17 @@ initialFetching(){
         this.setState({ info: resData ,isLoading : false});
       });
   } */
+
+  /**{this.state.info.map(item => (
+              <ShowCardItem
+                imgUri={item.image.medium}
+                title={item.name}
+                rating={item.rating.average}
+                key={item.id}
+                onPress={() =>
+                  this.props.navigation.navigate("Details", {
+                    id: item.id,
+                    title: item.name
+                  })
+                }
+              />   ))}*/
